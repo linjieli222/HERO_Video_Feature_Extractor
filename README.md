@@ -71,7 +71,7 @@ and save them as npz files to `/output/slowfast_features`.
 
 
 We use the pre-trained SlowFast model on Kinetics: [SLOWFAST_8X8_R50.pkl](https://dl.fbaipublicfiles.com/pyslowfast/model_zoo/kinetics400/SLOWFAST_8x8_R50.pkl).
-The checkpoint is already downloaded under `\models` directory in our provided docker image.
+The checkpoint is already downloaded under `/models` directory in our provided docker image.
 If you wish to use other SlowFast models, you can download them from [SlowFast Model Zoo](https://github.com/facebookresearch/SlowFast/blob/master/MODEL_ZOO.md). Note that you will need to set the corresponding config file through `--cfg`.
 
 ### 2D ResNet Feature Extraction
