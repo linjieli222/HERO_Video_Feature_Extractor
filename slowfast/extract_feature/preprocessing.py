@@ -166,7 +166,7 @@ class Preprocessing(object):
                 if duration > 0:
                     num_clips = int(math.ceil(duration/clip_len))
                     clips = clips[:num_clips]
-            except:
+            except Exception:
                 print("Duration not available...")
             fps = info["fps"]  # .item()
             start_idx, end_idx = get_start_end_idx(
@@ -180,5 +180,4 @@ class Preprocessing(object):
                 clips, start_idx, end_idx, self.num_frames)
             # B T H W C
             # clips = clips.transpose(1, 2)
-            
         return clips

@@ -1,11 +1,9 @@
 import torch as th
-import math
 import numpy as np
 from video_loader import (
     VideoLoader, clip_iterator, pack_pathway_output)
 from video_dataflow import VideoDataFlow, ReadVideo
-from dataflow import (
-    MultiProcessMapDataZMQ, MultiThreadMapData, MultiProcessRunnerZMQ)
+from dataflow import MultiProcessMapDataZMQ
 from torch.utils.data import DataLoader
 import argparse
 from model import build_model
@@ -13,7 +11,6 @@ from preprocessing import Preprocessing, Normalize
 from random_sequence_shuffler import RandomSequenceSampler
 from slowfast.config.defaults import get_cfg
 import slowfast.utils.checkpoint as cu
-import torch.nn.functional as F
 from tqdm import tqdm
 from prefetch_loader import PrefetchLoader
 import sys
@@ -25,7 +22,8 @@ YUV2RGB = YuvRgbConverter()
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Easy video feature extractor')
+    parser = argparse.ArgumentParser(
+        description='Easy video feature extractor')
 
     parser.add_argument(
         '--csv',
@@ -68,7 +66,7 @@ def parse_args():
         nargs=argparse.REMAINDER,
     )
     if len(sys.argv) == 1:
-        parser.print_help()                   
+        parser.print_help()
     return parser.parse_args()
 
 
@@ -103,10 +101,12 @@ def load_config(args):
 
 
 @th.no_grad()
-def perform_test(test_loader, model, preprocess, cfg, args, failed_log, n_dataset):
+def perform_test(test_loader, model, preprocess,
+                 cfg, args, failed_log, n_dataset):
     """
     For classification:
-    Perform mutli-view testing that uniformly samples N clips from a video along
+    Perform mutli-view testing that uniformly samples
+        N clips from a video along
     its temporal axis. For each clip, it takes 3 crops to cover the spatial
     dimension, followed by averaging the softmax scores across all Nx3 views to
     form a video-level prediction. All video predictions are compared to
@@ -149,7 +149,7 @@ def perform_test(test_loader, model, preprocess, cfg, args, failed_log, n_datase
             clip_loader = PrefetchLoader(clip_iterator(video, args.batch_size))
 
             for _, (min_ind, max_ind, fast_clip) in enumerate(clip_loader):
-                # B T H W C 
+                # B T H W C
                 fast_clip = fast_clip.float()
                 if args.pix_fmt == "yuv420p":
                     fast_clip = YUV2RGB(fast_clip)
@@ -173,7 +173,8 @@ def perform_test(test_loader, model, preprocess, cfg, args, failed_log, n_datase
             # safeguard output path before saving
             dirname = os.path.dirname(output_file)
             if not os.path.exists(dirname):
-                print(f"Output directory {dirname} does not exists, creating...")
+                print(f"Output directory {dirname} does not exists" +
+                      ", creating...")
                 os.makedirs(dirname)
             try:
                 # np.savez_compressed(output_file, features=features)
@@ -202,7 +203,7 @@ def main():
     # Set random seed from configs.
     np.random.seed(cfg.RNG_SEED)
     th.manual_seed(cfg.RNG_SEED)
-    failed_log = open(args.csv.split(".csv")[0]+"_failed.txt","w")
+    failed_log = open(args.csv.split(".csv")[0]+"_failed.txt", "w")
 
     preprocess = Preprocessing(
         "3d", cfg, target_fps=args.target_framerate,

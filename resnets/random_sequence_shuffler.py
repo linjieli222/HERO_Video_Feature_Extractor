@@ -1,6 +1,6 @@
-import torch as th
 from torch.utils.data.sampler import Sampler
 import numpy as np
+
 
 class RandomSequenceSampler(Sampler):
 

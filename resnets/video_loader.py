@@ -18,7 +18,7 @@ def convert_to_float(frac_str):
         try:
             leading, num = num.split(' ')
         except ValueError:
-            return float(num) / float(denom)        
+            return float(num) / float(denom)
         if float(leading) < 0:
             sign_mult = -1
         else:
@@ -113,9 +113,10 @@ class VideoLoader(Dataset):
             )
             if self.centercrop and isinstance(self.size, int):
                 height, width = self.size, self.size
-            video = np.frombuffer(out, np.uint8).reshape([-1, height, width, 3])
+            video = np.frombuffer(out, np.uint8).reshape(
+                [-1, height, width, 3])
             video = th.from_numpy(video.astype('float32'))
             video = video.permute(0, 3, 1, 2)
         else:
-            video = th.zeros(1) 
+            video = th.zeros(1)
         return {'video': video, 'input': video_path, 'output': output_file}

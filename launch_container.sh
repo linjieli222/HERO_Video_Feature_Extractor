@@ -8,12 +8,6 @@ if [ -z $CUDA_VISIBLE_DEVICES ]; then
     CUDA_VISIBLE_DEVICES='all'
 fi
 
-if [ "$5" = "--prepro" ]; then
-    RO=""
-else
-    RO=",readonly"
-fi
-
 docker run --gpus '"'device=$CUDA_VISIBLE_DEVICES'"' --ipc=host --network=host --rm -it \
     --mount src=$(pwd),dst=/src,type=bind \
     --mount src=$VID_DIR,dst=/video,type=bind,readonly \

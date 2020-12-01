@@ -9,7 +9,7 @@ def convert_to_float(frac_str):
         try:
             leading, num = num.split(' ')
         except ValueError:
-            return float(num) / float(denom)        
+            return float(num) / float(denom)
         if float(leading) < 0:
             sign_mult = -1
         else:
@@ -37,5 +37,5 @@ def gcd(a, b):
     b is divided by it, the result comes out positive).
     """
     while b:
-        a, b = b, a%b
+        a, b = b, a % b
     return a

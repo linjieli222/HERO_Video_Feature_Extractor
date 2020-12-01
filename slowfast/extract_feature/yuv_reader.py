@@ -54,4 +54,3 @@ def read_yuv420p(binary, w, h):
         yuv.data[i, ..., 2] = read_uv(w, h, binary[st: st+uv_len]).data
 
     return yuv
-

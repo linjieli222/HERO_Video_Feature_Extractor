@@ -1,5 +1,6 @@
 import torch as th
 
+
 class Normalize(object):
 
     def __init__(self, mean, std):
@@ -10,14 +11,19 @@ class Normalize(object):
         tensor = (tensor - self.mean) / (self.std + 1e-8)
         return tensor
 
+
 class Preprocessing(object):
 
     def __init__(self, type):
         self.type = type
         if type == '2d':
-            self.norm = Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+            self.norm = Normalize(
+                mean=[0.485, 0.456, 0.406],
+                std=[0.229, 0.224, 0.225])
         elif type == '3d':
-            self.norm = Normalize(mean=[110.6, 103.2, 96.3], std=[1.0, 1.0, 1.0])
+            self.norm = Normalize(
+                mean=[110.6, 103.2, 96.3],
+                std=[1.0, 1.0, 1.0])
 
     def _zero_pad(self, tensor, size):
         n = size - len(tensor) % size

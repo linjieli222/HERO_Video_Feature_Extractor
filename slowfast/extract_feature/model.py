@@ -2,11 +2,9 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 
 """Build a video classification model."""
-
-import torch
-
 import slowfast.utils.checkpoint as cu
 from slowfast.models import model_builder
+
 
 def build_model(cfg):
     """
@@ -45,6 +43,6 @@ def build_model(cfg):
         )
     else:
         # raise NotImplementedError("Unknown way to load checkpoint.")
-       print("Testing with random initialization. Only for debugging.")
-    
+        print("Testing with random initialization. Only for debugging.")
+
     return model
