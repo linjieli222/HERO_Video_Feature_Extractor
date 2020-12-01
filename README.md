@@ -26,7 +26,7 @@ We only support Linux with NVIDIA GPUs. We test on Ubuntu 18.04 and V100 cards.
 
 ```bash
 # docker image should be automatically pulled
-CUDA_VISIBLE_DEVICES=0 source launch_container.sh $PATH_TO_STORAGE/video_dir $PATH_TO_STORAGE/output_dir
+CUDA_VISIBLE_DEVICES=0 source launch_container.sh $PATH_TO_STORAGE/raw_video_dir $PATH_TO_STORAGE/feature_output_dir
 ```
 The launch script respects $CUDA_VISIBLE_DEVICES environment variable.
 We suggest to launch seperate containers to launch parallel feature extraction processes,
@@ -35,7 +35,8 @@ as the feature extraction script is intended to be run on ONE single GPU only.
 Note that the source code is mounted into the container under `/src` instead 
 of built into the image so that user modification will be reflected without
 re-building the image. (Data folders are mounted into the container separately
-for flexibility on folder structures.)
+for flexibility on folder structures.
+Specifically, `$PATH_TO_STORAGE/raw_video_dir` is mounted to `/video` and `$PATH_TO_STORAGE/feature_output_dir` is mounted to `/output`.)
 
 ### SlowFast Feature Extraction
 
@@ -65,7 +66,7 @@ python extract_feature/extract.py --dataflow --csv /output/csv/slowfast_info.csv
 This command will extract 3D SlowFast video features for videos listed in `/output/csv/slowfast_info.csv`
 and save them as npz files to `/output/slowfast_features`.
 * `--num_decoding_thread`: how many parallel cpu thread are used for the decoding of the videos
-* `--clip_len (in minutes)`: 1 feature per `clip_len` minutes, we set it to `3/2` or `2` in our paper
+* `--clip_len (in seconds)`: 1 feature per `clip_len` seconds, we set it to `3/2` or `2` in our paper
 * `--dataflow`: enables faster parallel video decoding and pre-processing with [Dataflow](https://github.com/tensorpack/dataflow), remove to disable and use PyTorch dataloader instead
 
 
@@ -99,7 +100,7 @@ python extract.py --csv /output/csv/resnet_info.csv --num_decoding_thread 4 --cl
 This command will extract 2D ResNet features for videos listed in `/output/csv/resnet_info.csv`
 and save them as npz files to `/output/resnet_features`.
 * `--num_decoding_thread`: how many parallel cpu thread are used for the decoding of the videos
-* `--clip_len (in minutes)`: 1 feature per `clip_len` minutes, we set it to `3/2` or `2` in our paper.
+* `--clip_len (in seconds)`: 1 feature per `clip_len` seconds, we set it to `3/2` or `2` in our paper.
 
 The model used to extract 2D features is the pytorch model zoo ResNet-152 pretrained on ImageNet, which will be downloaded on the fly.
 
