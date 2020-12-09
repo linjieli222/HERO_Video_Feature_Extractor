@@ -67,8 +67,8 @@ with th.no_grad():
     for k, data in enumerate(tqdm(loader)):
         input_file = data['input'][0]
         output_file = data['output'][0]
-        if len(data['video'].shape) > 3:
-            video = data['video'].squeeze()
+        if len(data['video'].shape) > 4:
+            video = data['video'].squeeze(0)
             if len(video.shape) == 4:
                 video = preprocess(video)
                 n_chunk = len(video)

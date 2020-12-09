@@ -93,7 +93,7 @@ class VideoLoader(Dataset):
                 duration = info["duration"]
                 fps = self.framerate
                 if duration > 0 and duration < 1/fps+0.1:
-                    fps = 2/int(duration)
+                    fps = 2/max(int(duration), 1)
                     print(duration, fps)
             except Exception:
                 fps = self.framerate
