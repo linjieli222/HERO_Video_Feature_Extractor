@@ -45,7 +45,7 @@ if __name__ == '__main__':
         '--csv_folder', type=str, default="/output/csv",
         help='output csv folder')
     parser.add_argument(
-        '--corrupted_id_file', type=str, default=None,
+        '--corrupted_id_file', type=str, default="",
         help='corrupted id file')
     args = parser.parse_args()
     main(args)
