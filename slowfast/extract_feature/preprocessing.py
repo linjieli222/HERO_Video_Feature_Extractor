@@ -70,7 +70,7 @@ class Normalize(object):
 
 class Preprocessing(object):
     def __init__(self, type, cfg, target_fps=16, size=112,
-                 clip_len='5', padding_mode='tile'):
+                 clip_len='5', padding_mode='tile', min_num_clips=1):
         self.type = type
         if type == '2d':
             self.norm = Normalize(
@@ -87,6 +87,7 @@ class Preprocessing(object):
         self.size = size
         self.clip_len = clip_len
         self.padding_mode = padding_mode
+        self.min_num_clips = min_num_clips
 
     def _tile(self, a, dim, n_tile):
         init_dim = a.size(dim)
@@ -159,8 +160,6 @@ class Preprocessing(object):
             clip_len = convert_to_float(self.clip_len)
             clips = tensor.view(
                     -1, int(clip_len*self.target_fps), self.size, self.size, 3)
-            # assert th.equal(clips[1, 0, :, :, :],
-            #                 tensor[clip_len, 0, :, :, :])
             try:
                 duration = info["duration"]
                 if duration > 0:
@@ -168,6 +167,12 @@ class Preprocessing(object):
                     clips = clips[:num_clips]
             except Exception:
                 print("Duration not available...")
+            num_clips = len(clips)
+            if num_clips < self.min_num_clips:
+                clips = clips.view(
+                    self.min_num_clips, -1, self.size, self.size, 3)
+            # assert th.equal(clips[1, 0, :, :, :],
+            #                 tensor[clip_len, 0, :, :, :])
             fps = info["fps"]  # .item()
             start_idx, end_idx = get_start_end_idx(
                 clips.shape[1],

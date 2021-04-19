@@ -1,5 +1,5 @@
 import torch as th
-from .s3dg import S3D
+from s3dg import S3D
 
 
 def build_model(args):

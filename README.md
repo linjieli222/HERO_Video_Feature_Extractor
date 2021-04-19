@@ -108,6 +108,12 @@ This script is copied and modified from [HowTo100M Feature Extractor](https://gi
 It also supports feature extraction from a pre-trained 3D ResNext-101 model, which is not fully tested in our current release.
 Plese follow the original repo if you would like to use their 3D feature extraction pipeline.
 
+
+## MIL-NCE pre-trained S3D features 
+```bash
+python extract.py --dataflow --csv /output/csv/mil-nce_info.csv    --batch_size 45 --num_decoding_thread 4 --clip_len 3/2
+```
+
 ## Citation
 
 If you find this code useful for your research, please consider citing:

@@ -57,6 +57,9 @@ def parse_args():
         '--clip_len', type=str, default='3/2',
         help='decoding length of clip (in seconds)')
     parser.add_argument(
+        '--min_num_features', type=int, default=1,
+        help='minimum number of features')
+    parser.add_argument(
         '--pix_fmt', type=str, default="rgb24", choices=["rgb24", "yuv420p"],
         help='decode video into RGB format')
     parser.add_argument(
@@ -204,10 +207,12 @@ def main():
     np.random.seed(cfg.RNG_SEED)
     th.manual_seed(cfg.RNG_SEED)
     failed_log = open(args.csv.split(".csv")[0]+"_failed.txt", "w")
+    assert args.target_framerate % args.min_num_features == 0
 
     preprocess = Preprocessing(
         "3d", cfg, target_fps=args.target_framerate,
-        size=224, clip_len=args.clip_len, padding_mode='tile')
+        size=224, clip_len=args.clip_len, padding_mode='tile',
+        min_num_clips=args.min_num_features)
     if args.dataflow:
         readvideo = ReadVideo(
             preprocess,

@@ -1,6 +1,10 @@
 import os
 import argparse
 import json
+COMMON_VIDEO_ETX = set([
+    ".webm", ".mpg", ".mpeg", ".mpv", ".ogg",
+    ".mp4", ".m4p", ".mpv", ".avi", ".wmv", ".qt",
+    ".mov", ".flv", ".swf"])
 
 
 def main(opts):
@@ -20,12 +24,18 @@ def main(opts):
     outputFile = f"{csv_folder}/resnet_info.csv"
     with open(outputFile, "w") as fw:
         fw.write("video_path,feature_path\n")
-        fileList = [f for f in os.listdir(videopath)
-                    if os.path.isfile(os.path.join(videopath, f))]
+        fileList = []
+        for dirpath, _, files in os.walk(videopath):
+            for fname in files:
+                input_file = os.path.join(dirpath, fname)
+                if os.path.isfile(input_file):
+                    _, ext = os.path.splitext(fname)
+                    if ext.lower() in COMMON_VIDEO_ETX:
+                        fileList.append(input_file)
 
-        for filename in fileList:
-            input_filename = os.path.join(videopath, filename)
-            fileId, file_extension = os.path.splitext(filename)
+        for input_filename in fileList:
+            filename = os.path.basename(input_filename)
+            fileId, _ = os.path.splitext(filename)
 
             output_filename = os.path.join(
                 feature_path, fileId+".npz")
