@@ -78,12 +78,9 @@ class VideoLoader(Dataset):
     def __getitem__(self, idx):
         video_path = self.csv['video_path'].values[idx]
         output_file = self.csv['feature_path'].values[idx]
-        if self.model_version == "ViT-B/32":
+        if self.model_version == "RN50x4":
             output_file = output_file.replace(
-                "clip_features", "clip-vit_features")
-        elif self.model_version == "RN50x4":
-            output_file = output_file.replace(
-                "clip_features", "clip-rn50x4_features")
+                "clip-vit_features", "clip-rn50x4_features")
         load_flag = os.path.isfile(video_path)
         if not self.overwrite:
             load_flag = load_flag and not(os.path.isfile(output_file))

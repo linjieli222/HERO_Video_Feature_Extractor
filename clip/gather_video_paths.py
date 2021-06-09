@@ -21,7 +21,7 @@ def main(opts):
     else:
         corrupted_ids = None
 
-    outputFile = f"{csv_folder}/clip_info.csv"
+    outputFile = f"{csv_folder}/clip-vit_info.csv"
     with open(outputFile, "w") as fw:
         fw.write("video_path,feature_path\n")
         fileList = []
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("--video_path", default="/video/", type=str,
                         help="The input video path.")
-    parser.add_argument("--feature_path", default="/output/clip_features",
+    parser.add_argument("--feature_path", default="/output/clip-vit_features",
                         type=str, help="output feature path.")
     parser.add_argument(
         '--csv_folder', type=str, default="/output/csv",

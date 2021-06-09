@@ -6,8 +6,14 @@ For official pre-training and finetuning code on various of datasets, please ref
 Some code in this repo are copied/modified from opensource implementations made available by
 [PyTorch](https://github.com/pytorch/pytorch),
 [Dataflow](https://github.com/tensorpack/dataflow),
-[SlowFast](https://github.com/facebookresearch/SlowFast) 
-and [HowTo100M Feature Extractor](https://github.com/antoine77340/video_feature_extractor).
+[SlowFast](https://github.com/facebookresearch/SlowFast),
+[HowTo100M Feature Extractor](https://github.com/antoine77340/video_feature_extractor),
+[S3D_HowTo100M](https://github.com/antoine77340/S3D_HowTo100M)
+and [CLIP](https://github.com/openai/CLIP).
+
+## Update
+We added support on two other models: [S3D_HowTo100M](https://github.com/antoine77340/S3D_HowTo100M)
+and [CLIP](https://github.com/openai/CLIP), which are used in VALUE baselines ([[paper]](), [[website]](https://value-leaderboard.github.io/)).
 
 ## Requirements
 
@@ -109,10 +115,75 @@ It also supports feature extraction from a pre-trained 3D ResNext-101 model, whi
 Plese follow the original repo if you would like to use their 3D feature extraction pipeline.
 
 
-## MIL-NCE pre-trained S3D features 
+### MIL-NCE pre-trained S3D features 
+
 ```bash
-python extract.py --dataflow --csv /output/csv/mil-nce_info.csv    --batch_size 45 --num_decoding_thread 4 --clip_len 3/2
+cd /src/mil-nce
 ```
+1. Generate a csv file with input and output files
+```bash
+python gather_video_paths.py
+```
+By defult, all video files under ``/video`` directory will be collected,
+and the output folder is set to be ``/output/mil-nce_features``.
+The csv file is written to ``/output/csv/mil-nce_info.csv`` with the following format:
+```bash
+video_path,feature_path
+/video/video1.mp4, /output/resnet_features/video1.npz
+/video/video2.webm, /output/resnet_features/video2.npz
+...
+```
+
+2. Extract features
+```bash
+python extract.py --dataflow --csv /output/csv/mil-nce_info.csv  --batch_size 45 --num_decoding_thread 4 
+```
+This command will extract S3D features for videos listed in `/output/csv/mil-nce_info.csv`
+and save them as npz files to `/output/mil-nce_features`.
+* `--num_decoding_thread`: how many parallel cpu thread are used for the decoding of the videos
+* `--clip_len (in seconds)`: 1 feature per `clip_len` seconds, we set it to `3/2` for VALUE baselines.
+
+The model used to extract S3D features is pre-trained on HowTo100M videos, refer to [the original paper](https://arxiv.org/abs/1912.06430) for more details.
+The checkpoint is already downloaded under `/models` directory in our provided docker image.
+
+This script is copied and modified from [S3D_HowTo100M](https://github.com/antoine77340/S3D_HowTo100M).
+
+
+## Image-text pre-trained CLIP features 
+Note that the docker image is different from the one used for the above three features. 
+```bash
+cd ./clip
+
+# docker image should be automatically pulled
+CUDA_VISIBLE_DEVICES=0 source launch_container.sh $PATH_TO_STORAGE/raw_video_dir $PATH_TO_STORAGE/feature_output_dir
+```
+
+1. Generate a csv file with input and output files
+```bash
+python gather_video_paths.py
+```
+By defult, all video files under ``/video`` directory will be collected,
+and the default output folder is set to be ``/output/clip-vit_features``.
+The csv file is written to ``/output/csv/clip-vit_info.csv`` with the following format:
+```bash
+video_path,feature_path
+/video/video1.mp4, /output/clip-vit_features/video1.npz
+/video/video2.webm, /output/clip-vit_features/video2.npz
+...
+```
+
+2. Extract features
+```bash
+python extract.py --csv /output/csv/clip-vit_info.csv --num_decoding_thread 4 --model_version ViT-B/32 
+```
+This command will extract CLIP features for videos listed in `/output/csv/clip-vit_info.csv`
+and save them as npz files to `/output/clip-vit_features`.
+* `--num_decoding_thread`: how many parallel cpu thread are used for the decoding of the videos
+* `--clip_len (in seconds)`: 1 feature per `clip_len` seconds, we set it to `3/2` for VALUE baselines.
+* `--model_version`: You can switch between `RN50x4` and `ViT-B/32 `, other models are not tested.
+
+The model used to extract CLIP features is pre-trained on large-scale image-text pairs, refer to [the original paper](https://arxiv.org/abs/2103.00020) for more details. The checkpoint will be downloaded on the fly.
+
 
 ## Citation
 
@@ -124,6 +195,7 @@ If you find this code useful for your research, please consider citing:
   booktitle={EMNLP},
   year={2020}
 }
+
 ```
 
 ## License

@@ -62,12 +62,9 @@ with th.no_grad():
     for k, data in enumerate(tqdm(loader)):
         input_file = data['input'][0]
         output_file = data['output'][0]
-        if args.model_version == "ViT-B/32":
+        if args.model_version == "RN50x4":
             output_file = output_file.replace(
-                "clip_features", "clip-vit_features")
-        elif args.model_version == "RN50x4":
-            output_file = output_file.replace(
-                "clip_features", "clip-rn50x4_features")
+                "clip-vit_features", "clip-rn50x4_features")
         if os.path.isfile(output_file):
             # print(f'Video {input_file} already processed.')
             continue
